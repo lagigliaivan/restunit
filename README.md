@@ -15,10 +15,10 @@ h := map[string]string{"Authorization": "Bearer " + "token"}
 
 GETJobs := restunit.NewRequestWithResponse[model.Reqest,model.Response](cfg.router)
 response := GETJobs.URL(fmt.Sprintf("/myurl/resource/items?now=%s", now)).
-WithHeaders(h).
-GET().
-Expect(http.StatusOK).
-Body()
+      WithHeaders(h).
+      GET().
+      Expect(http.StatusOK).
+      Body()
 
 assert.NotEmpty(t, response.Items)
 ```
