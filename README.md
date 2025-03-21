@@ -17,7 +17,7 @@ func TestDeleteOutOfDateAccounts(t *testing.T) {
 		}
 
 		//POSTing bankaccount
-		p := juez.NewRequestWithResponse[common.BulkUpsertBody[model.GlAccount], []model.GlAccount](c.router).
+		p := restunit.NewRequestWithResponse[common.BulkUpsertBody[model.GlAccount], []model.GlAccount](c.router).
 			WithHeaders(c.authHeader).
 			URL("/api/v1/bank_accounts").
 			POST(body).
@@ -33,7 +33,7 @@ func TestDeleteOutOfDateAccounts(t *testing.T) {
 		time.Sleep(1 * time.Second) //Sleeping to make sure the updated_at is different
 
 		//UPDATing bankaccount
-		p = juez.NewRequestWithResponse[common.BulkUpsertBody[model.GlAccount], []model.GlAccount](c.router).
+		p = restunit.NewRequestWithResponse[common.BulkUpsertBody[model.GlAccount], []model.GlAccount](c.router).
 			WithHeaders(c.authHeader).
 			URL("/api/v1/bank_accounts").
 			POST(body).
@@ -41,7 +41,7 @@ func TestDeleteOutOfDateAccounts(t *testing.T) {
 			Body()
 
 		//DELETEing property
-		juez.NewRequest[any](c.router).
+		restunit.NewRequest[any](c.router).
 			WithHeaders(c.authHeader).
 			URL(fmt.Sprintf("/api/v1/bank_accounts?until=%s&customer_id=%s",
 				p[0].UpdatedAt.Format(time.RFC3339),
@@ -51,7 +51,7 @@ func TestDeleteOutOfDateAccounts(t *testing.T) {
 			Expect(http.StatusOK)
 
 		//GETting property
-		response := juez.NewRequestWithResponse[any, common.PaginatedResponse[model.GlAccount]](c.router).
+		response := restunit.NewRequestWithResponse[any, common.PaginatedResponse[model.GlAccount]](c.router).
 			WithHeaders(c.authHeader).
 			URL("/api/v1/bank_accounts?filter[customer_id]=a25aae91-475d-11ee-8201-0a58a9feac02").
 			GET().
@@ -64,7 +64,7 @@ func TestDeleteOutOfDateAccounts(t *testing.T) {
 		assert.Len(t, accounts, 3)
 
 		//GETting property
-		response = juez.NewRequestWithResponse[any, common.PaginatedResponse[model.GlAccount]](c.router).
+		response = restunit.NewRequestWithResponse[any, common.PaginatedResponse[model.GlAccount]](c.router).
 			WithHeaders(c.authHeader).
 			URL("/api/v1/bank_accounts?filter[customer_id]=a25aae91-475d-11ee-8201-0a58a9feac01").
 			GET().
